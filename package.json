@@ -11,5 +11,8 @@
     "url": "git+https://rxaxhim@github.com/rxaxhim/fragments.git"
   },
   "author": "Raahim Ghori",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "prettier": "2.7.1"
+  }
 }
