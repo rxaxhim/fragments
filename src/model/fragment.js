@@ -90,8 +90,12 @@ class Fragment {
    * @returns Promise
    */
   save() {
-    // save the current fragment
-    return writeFragment(this.ownerId, this.id, this);
+    try {
+      this.updated = new Date().toISOString();
+      return writeFragment(this);
+    } catch (err) {
+      throw new Error('Error saving fragments');
+    }
   }
 
   /**
