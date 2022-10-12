@@ -16,7 +16,7 @@ test('readFragment', async () => {
 // Write a test for writeFragment
 test('writeFragment', async () => {
   // test that writeFragment returns undefined
-  const fragment = await writeFragment('ownerId', 'id', 'fragment');
+  const fragment = await writeFragment('fragment');
   // Assert that the fragment is undefined
   expect(fragment).toBeUndefined();
 });
