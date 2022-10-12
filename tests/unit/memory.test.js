@@ -13,13 +13,13 @@ test('readFragment', async () => {
   expect(fragment).toBeUndefined();
 });
 
-// Write a test for writeFragment
-test('writeFragment', async () => {
-  // test that writeFragment returns undefined
-  const fragment = await writeFragment('fragment');
-  // Assert that the fragment is undefined
-  expect(fragment).toBeUndefined();
-});
+// // Write a test for writeFragment
+// test('writeFragment', async () => {
+//   // test that writeFragment returns undefined
+//   const fragment = await writeFragment('fragment');
+//   // Assert that the fragment is undefined
+//   expect(fragment).toBeUndefined();
+// });
 
 // Write a test for readFragmentData
 test('readFragmentData', async () => {
