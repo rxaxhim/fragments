@@ -13,12 +13,11 @@ test('readFragment', async () => {
   expect(fragment).toBeUndefined();
 });
 
-// Write a test for writeFragment
-test('writeFragment', async () => {
-  // test that writeFragment returns undefined
-  const fragment = await writeFragment('fragment');
-  // Assert that the fragment is undefined
-  expect(fragment).toBeUndefined();
+// writeFragment
+test("writeFragment() expects string keys in fragment's metadata", () => {
+  expect(async () => await writeFragment()).rejects.toThrow();
+  expect(async () => await writeFragment({ ownerId: 1 })).rejects.toThrow();
+  expect(async () => await writeFragment({ ownerId: 1, id: 1 })).rejects.toThrow();
 });
 
 // Write a test for readFragmentData
