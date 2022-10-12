@@ -2,7 +2,7 @@ const {
   readFragmentData,
   writeFragmentData,
   readFragment,
-  writeFragment,
+  // writeFragment,
 } = require('../../src/model/data/memory/index.js');
 
 // Write a test for readFragment
