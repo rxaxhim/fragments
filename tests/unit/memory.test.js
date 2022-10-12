@@ -13,7 +13,6 @@ test('readFragment', async () => {
   expect(fragment).toBeUndefined();
 });
 
-// writeFragment
 test("writeFragment() expects string keys in fragment's metadata", () => {
   expect(async () => await writeFragment()).rejects.toThrow();
   expect(async () => await writeFragment({ ownerId: 1 })).rejects.toThrow();
