@@ -10,9 +10,8 @@ const contentType = require('content-type');
 const router = express.Router();
 
 // Define our first route, which will be: GET /v1/fragments
-router.get('/fragments', require('./get'));
-
-// Other routes will go here later on...
+router.get('/fragments/:id', require('./get'));
+router.get('/fragments', require('./get')); // Other routes will go here later on...
 const rawBody = () =>
   express.raw({
     inflate: true,
