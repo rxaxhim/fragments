@@ -35,6 +35,8 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USER }}/fragments:lab-6-step-21
+                ${{ secrets.DOCKER_USER }}/fragments:lab-6
+                ${{ secrets.DOCKER_USER }}/fragments:latest
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
