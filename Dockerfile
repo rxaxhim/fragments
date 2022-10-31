@@ -1,13 +1,13 @@
 # This is a dockerfile which will be used to build the project and run the tests
 
 # --------------> The build image
-FROM node:latest AS build
+FROM node:19-alpine3.15 AS build
+# Use /app as our working directory
+WORKDIR /app
 # Copy the package.json and package-lock.json files into the working dir (/app)
 COPY --chown=node:node . package*.json ./
 # Install the dependencies
 RUN npm install
-# Use /app as our working directory
-WORKDIR /app
 
 
 # --------------> Production image
@@ -42,6 +42,6 @@ COPY ./src ./src
 # Copy our HTPASSWD file
 COPY ./tests/.htpasswd ./tests/.htpasswd
 # Start the container by running our server
-CMD "npm" "start"
+CMD ["npm", "start"]
 # We run our service on port 8080
 EXPOSE 8080
