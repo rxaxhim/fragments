@@ -2,10 +2,10 @@
 
 # --------------> The build image
 FROM node:19-alpine3.15 AS build
-# Use /app as our working directory
-WORKDIR /app
 # Copy the package.json and package-lock.json files into the working dir (/app)
 COPY --chown=node:node . package*.json ./
+# Use /app as our working directory
+WORKDIR /app
 # Install the dependencies
 RUN npm install
 
