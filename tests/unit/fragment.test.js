@@ -5,6 +5,9 @@ const wait = async (ms = 10) => new Promise((resolve) => setTimeout(resolve, ms)
 
 const validTypes = [
   `text/plain`,
+  `text/markdown`,
+  `text/html`,
+  `application/json`,
   /*
    Currently, only text/plain is supported. Others will be added later.
   `text/markdown`,
@@ -35,9 +38,23 @@ describe('Fragment class', () => {
       expect(() => new Fragment({ ownerId: '1234', size: 1 })).toThrow();
     });
 
-    test('type can be a simple media type', () => {
+    test('type can be a text type', () => {
       const fragment = new Fragment({ ownerId: '1234', type: 'text/plain', size: 0 });
       expect(fragment.type).toEqual('text/plain');
+    });
+
+    test('type can be a markdown type', () => {
+      const fragment = new Fragment({ ownerId: '1234', type: 'text/markdown', size: 0 });
+      expect(fragment.type).toEqual('text/markdown');
+    });
+
+    test('type can be a html type', () => {
+      const fragment = new Fragment({ ownerId: '1234', type: 'text/html', size: 0 });
+      expect(fragment.type).toEqual('text/html');
+    });
+    test('type can be a json type', () => {
+      const fragment = new Fragment({ ownerId: '1234', type: 'application/json', size: 0 });
+      expect(fragment.type).toEqual('application/json');
     });
 
     test('type can include a charset', () => {
@@ -119,6 +136,10 @@ describe('Fragment class', () => {
     test('common text types are supported, with and without charset', () => {
       expect(Fragment.isSupportedType('text/plain')).toBe(true);
       expect(Fragment.isSupportedType('text/plain; charset=utf-8')).toBe(true);
+      expect(Fragment.isSupportedType('text/markdown')).toBe(true);
+      expect(Fragment.isSupportedType('text/markdown; charset=utf-8')).toBe(true);
+      expect(Fragment.isSupportedType('text/html')).toBe(true);
+      expect(Fragment.isSupportedType('text/html; charset=utf-8')).toBe(true);
     });
 
     test('other types are not supported', () => {

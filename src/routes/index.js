@@ -14,6 +14,8 @@ const { authenticate } = require('../authorization');
 // import response
 const response = require('../response');
 
+const { hostname } = require('os');
+
 /**
  * Expose all of our API routes on /v1/* to include an API version.
  * Protect them all so you have to be authenticated in order to access.
@@ -30,9 +32,10 @@ router.get('/', (req, res) => {
   // Send a 200 'OK' response
   res.status(200).json(
     response.createSuccessResponse({
-      author,
-      githubUrl: 'https://github.com/humphd/fragments',
+      author: 'Raahim Ghori',
+      githubUrl: 'https://github.com/rxaxhim/fragments',
       version,
+      hostname: hostname(),
     })
   );
 });
