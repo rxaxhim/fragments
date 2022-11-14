@@ -9,7 +9,8 @@ COPY --chown=node:node . package*.json ./
 # Use /app as our working directory
 WORKDIR /app
 # Install the dependencies
-RUN npm install --production
+RUN npm install --only=production --no-install-recommends \
+    && npm cache clean --force
 
 
 # --------------> Production image
@@ -35,7 +36,8 @@ COPY --chown=node:node . .
 WORKDIR /app/node_modules
 COPY --chown=node:node --from=build ./node_modules .
 # Install node dependencies defined in package-lock.json
-RUN npm ci --only=production
+RUN npm ci --only=production --no-install-recommends \
+    && npm cache clean --force
 #Run the container as an unprivileged user whenever possible
 USER node
 WORKDIR /app/src

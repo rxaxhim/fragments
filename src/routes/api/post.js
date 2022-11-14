@@ -18,6 +18,7 @@ module.exports = async (req, res) => {
     created: new Date().toISOString(),
     updated: new Date().toISOString(),
     size: req.body.length,
+    data: req.body.toString(),
   };
 
   const fragments = new Fragment(metadata);

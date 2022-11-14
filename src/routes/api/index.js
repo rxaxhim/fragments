@@ -12,6 +12,8 @@ const router = express.Router();
 // Define our first route, which will be: GET /v1/fragments
 router.get('/fragments/:id', require('./get'));
 router.get('/fragments', require('./get')); // Other routes will go here later on...
+router.get('/fragments/:id/info', require('./get'));
+router.get('/fragments\\?expand=1', require('./get'));
 const rawBody = () =>
   express.raw({
     inflate: true,

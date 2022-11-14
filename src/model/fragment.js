@@ -15,7 +15,7 @@ const {
 } = require('./data');
 
 class Fragment {
-  constructor({ id, ownerId, created, updated, type, size = 0 }) {
+  constructor({ id, ownerId, created, updated, type, size = 0, data }) {
     // ownerId and type are required
     if (!ownerId || !type) {
       throw new Error('ownerId and type are required');
@@ -46,6 +46,7 @@ class Fragment {
     this.updated = updated || new Date().toISOString();
     this.type = type;
     this.size = size;
+    this.data = data;
   }
 
   /**
@@ -72,7 +73,10 @@ class Fragment {
   static async byId(ownerId, id) {
     // get fragment for the user using the id provided by the user
     const fragment = await readFragment(ownerId, id);
-    return new Fragment(fragment);
+    if (fragment == null) {
+      throw new Error('Fragment is null or undefined');
+    }
+    return fragment;
   }
 
   /**
@@ -116,6 +120,7 @@ class Fragment {
     // Set's the fragment's data in the database
     this.size = data.length;
     this.updated = new Date().toISOString();
+    this.data = data;
     await writeFragmentData(this.ownerId, this.id, data);
   }
 
@@ -137,13 +142,25 @@ class Fragment {
     return this.mimeType.startsWith('text/');
   }
 
+  get isMarkdown() {
+    if (this.mimeType === 'text/markdown') {
+      return true;
+    }
+    return false;
+  }
+
   /**
    * Returns the formats into which this fragment type can be converted
    * @returns {Array<string>} list of supported mime types
    */
   get formats() {
-    // Returns the array list of supported mime types
-    return ['text/plain'];
+    if (this.isText) {
+      return ['text/plain'];
+    }
+    if (this.isMarkdown) {
+      return ['text/html'];
+    }
+    return [];
   }
 
   /**
@@ -152,9 +169,17 @@ class Fragment {
    * @returns {boolean} true if we support this Content-Type (i.e., type/subtype)
    */
   static isSupportedType(value) {
-    // Returns true if we know how to work with this content type
     const { type } = contentType.parse(value);
-    return ['text/plain'].includes(type);
+    if (
+      type === 'text/plain' ||
+      type === 'text/plain; charset=utf-8' ||
+      type === 'text/markdown' ||
+      type === 'text/html' ||
+      type === 'application/json'
+    ) {
+      return true;
+    }
+    return false;
   }
 }
 module.exports.Fragment = Fragment;
