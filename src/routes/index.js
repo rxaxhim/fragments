@@ -32,7 +32,7 @@ router.get('/', (req, res) => {
   // Send a 200 'OK' response
   res.status(200).json(
     response.createSuccessResponse({
-      author: 'Raahim Ghori',
+      author,
       githubUrl: 'https://github.com/rxaxhim/fragments',
       version,
       hostname: hostname(),
