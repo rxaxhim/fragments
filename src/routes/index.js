@@ -5,6 +5,8 @@ const express = require('express');
 // version and author from package.json
 const { version, author } = require('../../package.json');
 
+const { hostname } = require('os');
+
 // Our authorization middleware
 const { authenticate } = require('../authorization');
 
@@ -32,6 +34,7 @@ router.get('/', (req, res) => {
     author,
     githubUrl: 'https://github.com/rxaxhim/fragments',
     version,
+    hostname: hostname(),
   };
 
   // Send a 200 'OK' response with info about our repo
