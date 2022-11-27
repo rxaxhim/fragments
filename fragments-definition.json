@@ -41,6 +41,10 @@
         {
           "name": "AWS_S3_BUCKET_NAME",
           "value": "mghori2-fragments"
+        },
+        {
+          "name": "API_URL",
+          "value": "EC2Co-EcsEl-L6G12NSJWLDZ-848613416.us-east-1.elb.amazonaws.com"
         }
       ],
       "resourceRequirements": null,
@@ -77,10 +81,7 @@
   "placementConstraints": [],
   "memory": "512",
   "taskRoleArn": null,
-  "compatibilities": [
-    "EC2",
-    "FARGATE"
-  ],
+  "compatibilities": ["EC2", "FARGATE"],
   "taskDefinitionArn": "arn:aws:ecs:us-east-1:959446252778:task-definition/fragments-task:1",
   "family": "fragments-task",
   "requiresAttributes": [
@@ -122,9 +123,7 @@
     }
   ],
   "pidMode": null,
-  "requiresCompatibilities": [
-    "FARGATE"
-  ],
+  "requiresCompatibilities": ["FARGATE"],
   "networkMode": "awsvpc",
   "runtimePlatform": null,
   "cpu": "256",
