@@ -91,7 +91,7 @@ jobs:
             AWS_COGNITO_POOL_ID=us-east-1_I0ODpbzZB
             AWS_COGNITO_CLIENT_ID=72hqcc84dmhbtvsubl79vsfnsd
             PORT=8080
-            AWS_S3_BUCKET_NAME= mghori2-fragments
+            AWS_S3_BUCKET_NAME=mghori2-fragments
             AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}}
             AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}
             AWS_SESSION_TOKEN=${{secrets.AWS_SESSION_TOKEN}}
