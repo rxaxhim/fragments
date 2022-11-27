@@ -1,16 +1,14 @@
 // src/app.js
 
+const { createErrorResponse } = require('./response');
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
 const passport = require('passport');
+
 const authorization = require('./authorization');
-
-const response = require('./response');
-
-// version and author from our package.json file
-
 const logger = require('./logger');
 const pino = require('pino-http')({
   // Use our default logger instance, which is already configured
@@ -32,21 +30,16 @@ app.use(cors());
 // Use gzip/deflate compression middleware
 app.use(compression());
 
-// Use gzip/deflate compression middleware
-app.use(compression());
-
 // Set up our passport authorization middleware
 passport.use(authorization.strategy());
 app.use(passport.initialize());
 
-// Define a simple health check route. If the server is running
-// we'll respond with a 200 OK.  If not, the server isn't healthy.
 // Define our routes
 app.use('/', require('./routes'));
 
-// Add 404 middleware to handle any requests for resources that can't be found
+// Add 404 middleware to handle any requests for resources that can't be found can't be found
 app.use((req, res) => {
-  res.status(404).json(response.createErrorResponse({}));
+  res.status(404).json(createErrorResponse(404, 'not found'));
 });
 
 // Add error-handling middleware to deal with anything else
@@ -62,7 +55,13 @@ app.use((err, req, res, next) => {
     logger.error({ err }, `Error processing request`);
   }
 
-  res.status(status).json(response.createErrorResponse({ message }));
+  res.status(status).json({
+    status: 'error',
+    error: {
+      message,
+      code: status,
+    },
+  });
 });
 
 // Export our `app` so we can access it in server.js

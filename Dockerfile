@@ -1,52 +1,69 @@
-# This is a dockerfile which will be used to build the project and run the tests
+# Dockerfile for fragments API
 
-# --------------> The build image
-FROM node:19-alpine3.15 AS build
-# Use / as our working directory
-WORKDIR /
-# Copy the package.json and package-lock.json files into the working dir (/app)
-COPY --chown=node:node . package*.json ./
-# Use /app as our working directory
-WORKDIR /app
-# Install the dependencies
-RUN npm install --only=production --no-install-recommends \
-    && npm cache clean --force
+# Stage 0: Install alpine Linux + node + ci + dependencies
+FROM node:16.15.1-alpine3.15 AS dependencies
 
-
-# --------------> Production image
-FROM node:19-alpine3.15
-LABEL maintainer="Raahim Ghori <mghori2@myseneca.ca>"
+# LABEL adds metadata to an image
+LABEL maintainer="Raahim Ghori <mghori2@myseneca.ca"   
 LABEL description="Fragments node.js microservice"
+
+# Image and container will run in production mode
+ENV NODE_ENV=production
+
 # We default to use port 8080 in our service
 ENV PORT=8080
+
 # Reduce npm spam when installing within Docker
 # https://docs.npmjs.com/cli/v8/using-npm/config#loglevel
 ENV NPM_CONFIG_LOGLEVEL=warn
+
 # Disable colour when run inside Docker
 # https://docs.npmjs.com/cli/v8/using-npm/config#color
 ENV NPM_CONFIG_COLOR=false
-# Optimal settings for performance and security
-ENV NODE_ENV production
+
 # Use /app as our working directory
 WORKDIR /app
+
 # Copy the package.json and package-lock.json files into /app
-COPY --chown=node:node . package*.json ./
-#copy node into app
-COPY --chown=node:node . .
-WORKDIR /app/node_modules
-COPY --chown=node:node --from=build ./node_modules .
-# Install node dependencies defined in package-lock.json
-RUN npm ci --only=production --no-install-recommends \
-    && npm cache clean --force
-#Run the container as an unprivileged user whenever possible
-USER node
-WORKDIR /app/src
+COPY package*.json ./
+
+# Install only production dependencies defined in package-lock.json
+RUN npm ci --only=production
+
+#######################################################################
+
+# Stage 1: use dependencies to run the API server
+
+FROM node:16.15.1-alpine3.15 AS deploy
+
+# Install dumb-init and curl
+RUN apk add --no-cache dumb-init=~1.2.5 curl=~7.80.0
+
+# Image and container will run in production mode
+ENV NODE_ENV=production
+
+# Use /app as our working directory
+WORKDIR /app
+
+# Copy cached dependencies from stage 0 to stage 1 so we don't have to download them again
+# --chown=node:node means change owenrship to node user
+COPY --chown=node:node --from=dependencies /app /app/
+
 # Copy src to /app/src/
-COPY ./src .
-# Copy our HTPASSWD file
-WORKDIR /app/tests/htpasswd
-COPY ./tests/.htpasswd .
+COPY --chown=node:node ./src ./src
+
+# Copy our HTPASSWD file and neccessary files
+COPY --chown=node:node ./tests ./tests
+
+# Change user from root to node
+USER node
+
 # Start the container by running our server
-CMD ["npm", "start"]
+CMD ["dumb-init", "node", "src/index.js"]
+
 # We run our service on port 8080
 EXPOSE 8080
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+  CMD curl --fail localhost:8080 || exit 1

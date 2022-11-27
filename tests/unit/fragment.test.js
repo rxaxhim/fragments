@@ -1,15 +1,13 @@
-const { Fragment } = require('../../src/model/fragment');
+const Fragment = require('../../src/model/fragment');
 
 // Wait for a certain number of ms. Returns a Promise.
 const wait = async (ms = 10) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const validTypes = [
   `text/plain`,
-  `text/markdown`,
-  `text/html`,
-  `application/json`,
   /*
    Currently, only text/plain is supported. Others will be added later.
+
   `text/markdown`,
   `text/html`,
   `application/json`,
@@ -38,23 +36,9 @@ describe('Fragment class', () => {
       expect(() => new Fragment({ ownerId: '1234', size: 1 })).toThrow();
     });
 
-    test('type can be a text type', () => {
+    test('type can be a simple media type', () => {
       const fragment = new Fragment({ ownerId: '1234', type: 'text/plain', size: 0 });
       expect(fragment.type).toEqual('text/plain');
-    });
-
-    test('type can be a markdown type', () => {
-      const fragment = new Fragment({ ownerId: '1234', type: 'text/markdown', size: 0 });
-      expect(fragment.type).toEqual('text/markdown');
-    });
-
-    test('type can be a html type', () => {
-      const fragment = new Fragment({ ownerId: '1234', type: 'text/html', size: 0 });
-      expect(fragment.type).toEqual('text/html');
-    });
-    test('type can be a json type', () => {
-      const fragment = new Fragment({ ownerId: '1234', type: 'application/json', size: 0 });
-      expect(fragment.type).toEqual('application/json');
     });
 
     test('type can include a charset', () => {
@@ -136,10 +120,6 @@ describe('Fragment class', () => {
     test('common text types are supported, with and without charset', () => {
       expect(Fragment.isSupportedType('text/plain')).toBe(true);
       expect(Fragment.isSupportedType('text/plain; charset=utf-8')).toBe(true);
-      expect(Fragment.isSupportedType('text/markdown')).toBe(true);
-      expect(Fragment.isSupportedType('text/markdown; charset=utf-8')).toBe(true);
-      expect(Fragment.isSupportedType('text/html')).toBe(true);
-      expect(Fragment.isSupportedType('text/html; charset=utf-8')).toBe(true);
     });
 
     test('other types are not supported', () => {
@@ -187,6 +167,33 @@ describe('Fragment class', () => {
       });
       expect(fragment.formats).toEqual(['text/plain']);
     });
+
+    test('formats returns the expected result for html', () => {
+      const fragment = new Fragment({
+        ownerId: '1234',
+        type: 'text/html',
+        size: 0,
+      });
+      expect(fragment.formats).toEqual(['text/html', 'text/plain']);
+    });
+
+    test('formats returns the expected result for markdown', () => {
+      const fragment = new Fragment({
+        ownerId: '1234',
+        type: 'text/markdown',
+        size: 0,
+      });
+      expect(fragment.formats).toEqual(['text/markdown', 'text/plain', 'text/html']);
+    });
+
+    test('formats returns the expected result for json', () => {
+      const fragment = new Fragment({
+        ownerId: '1234',
+        type: 'application/json',
+        size: 0,
+      });
+      expect(fragment.formats).toEqual(['application/json', 'text/plain']);
+    });
   });
 
   describe('save(), getData(), setData(), byId(), byUser(), delete()', () => {
@@ -201,7 +208,10 @@ describe('Fragment class', () => {
       await fragment.setData(data);
 
       const fragment2 = await Fragment.byId('1234', fragment.id);
-      expect(fragment2).toEqual(fragment);
+      expect(fragment2.created).toEqual(fragment.created);
+      expect(fragment2.id).toEqual(fragment.id);
+      expect(fragment2.ownerId).toEqual(fragment.ownerId);
+      expect(fragment2.size).toEqual(fragment.size);
       expect(await fragment2.getData()).toEqual(data);
     });
 
@@ -244,8 +254,12 @@ describe('Fragment class', () => {
       const fragment = new Fragment({ ownerId, type: 'text/plain', size: 0 });
       await fragment.save();
       await fragment.setData(data);
+      const fragmentList = await Fragment.byUser(ownerId, true);
 
-      expect(await Fragment.byUser(ownerId, true)).toEqual([fragment]);
+      expect(fragmentList[0].created).toEqual(fragment.created);
+      expect(fragmentList[0].id).toEqual(fragment.id);
+      expect(fragmentList[0].ownerId).toEqual(fragment.ownerId);
+      expect(fragmentList[0].size).toEqual(fragment.size);
     });
 
     test('setData() throws if not give a Buffer', () => {
@@ -257,7 +271,7 @@ describe('Fragment class', () => {
       const fragment = new Fragment({ ownerId: '1234', type: 'text/plain', size: 0 });
       await fragment.save();
       await fragment.setData(Buffer.from('a'));
-      expect(fragment.size).toBe(1);
+      await expect(fragment.size).toBe(1);
 
       await fragment.setData(Buffer.from('aa'));
       const { size } = await Fragment.byId('1234', fragment.id);
@@ -268,7 +282,6 @@ describe('Fragment class', () => {
       const fragment = new Fragment({ ownerId: '1234', type: 'text/plain', size: 0 });
       await fragment.save();
       await fragment.setData(Buffer.from('a'));
-
       await Fragment.delete('1234', fragment.id);
       expect(() => Fragment.byId('1234', fragment.id)).rejects.toThrow();
     });
