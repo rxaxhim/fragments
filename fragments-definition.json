@@ -31,20 +31,20 @@
           "value": "72hqcc84dmhbtvsubl79vsfnsd"
         },
         {
+          "name": "AWS_COGNITO_HOSTED_UI_DOMAIN",
+          "value": "rxaxhim-dps955.auth.us-east-1.amazoncognito.com"
+        },
+        {
           "name": "AWS_COGNITO_POOL_ID",
           "value": "us-east-1_I0ODpbzZB"
         },
         {
+          "name": "AWS_REGION",
+          "value": "us-east-1"
+        },
+        {
           "name": "PORT",
           "value": "8080"
-        },
-        {
-          "name": "AWS_S3_BUCKET_NAME",
-          "value": "mghori2-fragments"
-        },
-        {
-          "name": "API_URL",
-          "value": "http://EC2Co-EcsEl-L6G12NSJWLDZ-848613416.us-east-1.elb.amazonaws.com:8080"
         }
       ],
       "resourceRequirements": null,
@@ -82,7 +82,7 @@
   "memory": "512",
   "taskRoleArn": null,
   "compatibilities": ["EC2", "FARGATE"],
-  "taskDefinitionArn": "arn:aws:ecs:us-east-1:959446252778:task-definition/fragments-task:1",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-1:959446252778:task-definition/fragments-task:11",
   "family": "fragments-task",
   "requiresAttributes": [
     {
@@ -127,7 +127,7 @@
   "networkMode": "awsvpc",
   "runtimePlatform": null,
   "cpu": "256",
-  "revision": 1,
+  "revision": 11,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
