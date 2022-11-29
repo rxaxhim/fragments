@@ -96,6 +96,7 @@ jobs:
             AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}
             AWS_SESSION_TOKEN=${{secrets.AWS_SESSION_TOKEN}}
             API_URL=http://EC2Co-EcsEl-1CVZXQPQHBBEH-2047381096.us-east-1.elb.amazonaws.com:8080
+            AWS_DYNAMODB_TABLE_NAME=fragments
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
