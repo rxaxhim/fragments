@@ -205,13 +205,13 @@ class Fragment {
         if (this.type === 'text/markdown') return md.render(fragmentData.toString());
         return fragmentData;
       case 'image/png':
-        return await sharp(fragmentData).png().toBuffer();
+        return await sharp(fragmentData).png();
       case 'image/jpeg':
-        return await sharp(fragmentData).jpeg().toBuffer();
+        return await sharp(fragmentData).jpeg();
       case 'image/gif':
-        return await sharp(fragmentData).gif().toBuffer();
+        return await sharp(fragmentData).gif();
       case 'image/webp':
-        return await sharp(fragmentData).webp().toBuffer();
+        return await sharp(fragmentData).webp();
       default:
         return fragmentData;
     }
